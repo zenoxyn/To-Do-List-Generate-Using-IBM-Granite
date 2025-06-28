@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To-Do List App</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f4;
+      }
+      #app {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+      }
+      header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      #taskForm {
+        display: flex;
+        margin-bottom: 20px;
+      }
+      #taskInput {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      #addTaskBtn {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 4px;
+      }
+      .task-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #ccc;
+      }
+      .task-item input[type="checkbox"] {
+        margin-right: 10px;
+      }
+      .task-item span {
+        flex-grow: 1;
+      }
+      .task-item.completed span {
+        text-decoration: line-through;
+        color: gray;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <header
+        style="
+          background-color: #4caf50;
+          padding: 20px;
+          text-align: center;
+          color: white;
+        "
+      >
+        <h1>My To-Do List</h1>
+      </header>
+      <main style="padding: 20px">
+        <form id="taskForm">
+          <input
+            type="text"
+            id="taskInput"
+            placeholder="Add a new task"
+            style="
+              padding: 10px;
+              margin-bottom: 10px;
+              width: 100%;
+              box-sizing: border-box;
+            "
+          />
+          <button
+            type="submit"
+            id="addTaskBtn"
+            style="
+              padding: 10px;
+              background-color: white;
+              color: #4caf50;
+              border: none;
+              cursor: pointer;
+            "
+          >
+            Add
+          </button>
+        </form>
+        <ul id="taskList" style="list-style-type: none; padding: 0"></ul>
+      </main>
+    </div>
+
+    <script>
+      function getTasks() {
+        return JSON.parse(localStorage.getItem("tasks") || "[]");
+      }
+
+      function saveTasks(tasks) {
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+      }
+
+      function renderTasks() {
+        const taskList = document.getElementById("taskList");
+        taskList.innerHTML = "";
+        const tasks = getTasks();
+        tasks.forEach((task, idx) => {
+          const newTask = document.createElement("li");
+          newTask.className = "task-item";
+          if (task.completed) newTask.classList.add("completed");
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = task.completed;
+          checkbox.addEventListener("change", function () {
+            tasks[idx].completed = checkbox.checked;
+            saveTasks(tasks);
+            renderTasks();
+          });
+          newTask.appendChild(checkbox);
+
+          const taskText = document.createElement("span");
+          taskText.textContent = task.text;
+          newTask.appendChild(taskText);
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "Delete";
+          deleteBtn.style.backgroundColor = "#f44336";
+          deleteBtn.style.color = "white";
+          deleteBtn.style.border = "none";
+          deleteBtn.style.padding = "5px 10px";
+          deleteBtn.style.marginLeft = "auto";
+          deleteBtn.style.cursor = "pointer";
+          deleteBtn.addEventListener("click", function () {
+            tasks.splice(idx, 1);
+            saveTasks(tasks);
+            renderTasks();
+          });
+          newTask.appendChild(deleteBtn);
+
+          taskList.appendChild(newTask);
+        });
+      }
+
+      document
+        .getElementById("taskForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const taskInput = document.getElementById("taskInput");
+          const taskValue = taskInput.value.trim();
+          if (!taskValue) return;
+          const tasks = getTasks();
+          tasks.push({ text: taskValue, completed: false });
+          saveTasks(tasks);
+          taskInput.value = "";
+          renderTasks();
+        });
+
+      renderTasks();
+    </script>
+  </body>
+</html>

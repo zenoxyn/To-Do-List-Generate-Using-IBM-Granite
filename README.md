@@ -33,7 +33,7 @@ The app is built using only HTML, CSS, and JavaScript (Vanilla JS), and is optim
    cd todo-app
    start index.html
    ```
-##🤖 AI Support Explanation
+## 🤖 AI Support Explanation
 - IBM Granite AI was used throughout the development process to:
 - Generate initial HTML layout (form, task list, structure)
 - Create clean and consistent CSS styling

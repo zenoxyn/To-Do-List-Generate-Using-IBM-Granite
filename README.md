@@ -1,4 +1,4 @@
-# Smart To-Do List App
+# To-Do List App
 
 ## 📋 Description
 This is a simple and responsive To-Do List web application that allows users to add, delete, and mark tasks as completed.  
